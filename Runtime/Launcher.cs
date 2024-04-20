@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-#if UNITY_EDITOR
+#if UNITY_INCLUDE_TESTS
 
 using System;
 using System.Linq;

@@ -1,6 +1,8 @@
 // Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+#if UNITY_INCLUDE_TESTS
+
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Settings;
 using NUnit.Framework;
@@ -53,3 +55,5 @@ namespace DeNA.Anjin
         }
     }
 }
+
+#endif
