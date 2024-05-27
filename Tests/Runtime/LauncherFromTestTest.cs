@@ -8,6 +8,7 @@ using DeNA.Anjin.Settings;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace DeNA.Anjin
 {
@@ -39,6 +40,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
         public async Task AutopilotAsync_WithAssetFile_RunAutopilot()
         {
             const string AssetPath = "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset";

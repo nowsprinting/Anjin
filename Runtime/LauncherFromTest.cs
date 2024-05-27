@@ -3,6 +3,7 @@
 
 #if UNITY_INCLUDE_TESTS
 
+using System;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Settings;
 using NUnit.Framework;
@@ -22,6 +23,7 @@ namespace DeNA.Anjin
         /// If an error is detected in running, it will be output to `LogError` and the test will fail.
         /// </summary>
         /// <param name="settings">Autopilot settings</param>
+        [Obsolete("Use `Launcher.LaunchAutopilotAsync` instead")]
         public static async UniTask AutopilotAsync(AutopilotSettings settings)
         {
 #if UNITY_EDITOR
@@ -38,7 +40,7 @@ namespace DeNA.Anjin
 
             state.launchFrom = LaunchType.PlayModeTests;
             state.settings = settings;
-            Launcher.Run();
+            Launcher.LaunchAutopilot();
 
             await UniTask.WaitUntil(() => !state.IsRunning);
         }
@@ -48,10 +50,15 @@ namespace DeNA.Anjin
         /// If an error is detected in running, it will be output to `LogError` and the test will fail.
         /// </summary>
         /// <param name="autopilotSettingsPath">Asset file path for autopilot settings</param>
+        [Obsolete("Use `Launcher.LaunchAutopilotAsync` instead")]
         public static async UniTask AutopilotAsync(string autopilotSettingsPath)
         {
+#if UNITY_EDITOR
             var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(autopilotSettingsPath);
             await AutopilotAsync(settings);
+#else
+            throw new AssertionException("Not support run on player");
+#endif
         }
     }
 }

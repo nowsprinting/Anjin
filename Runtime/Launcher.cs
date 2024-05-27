@@ -1,16 +1,19 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 #if UNITY_INCLUDE_TESTS
 
 using System;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
-using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin
 {
@@ -33,7 +36,7 @@ namespace DeNA.Anjin
         /// Run autopilot
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        public static void Run()
+        public static void LaunchAutopilot()
         {
             var state = AutopilotState.Instance;
             if (!state.IsRunning)
@@ -101,6 +104,47 @@ namespace DeNA.Anjin
                     throw new ArgumentOutOfRangeException(nameof(state.launchFrom));
 #pragma warning restore S3928
             }
+        }
+
+        /// <summary>
+        /// Run autopilot from Play Mode test.
+        /// If an error is detected in running, it will be output to `LogError` and the test will fail.
+        /// </summary>
+        /// <param name="settings">Autopilot settings</param>
+        public static async UniTask LaunchAutopilotAsync(AutopilotSettings settings)
+        {
+#if UNITY_EDITOR
+            if (!EditorApplication.isPlaying)
+            {
+                throw new InvalidOperationException("Not support run on Edit Mode tests");
+            }
+#endif
+            var state = AutopilotState.Instance;
+            if (state.IsRunning)
+            {
+                throw new InvalidOperationException("Autopilot is already running");
+            }
+
+            state.launchFrom = LaunchType.PlayModeTests;
+            state.settings = settings;
+            Launcher.LaunchAutopilot();
+
+            await UniTask.WaitUntil(() => !state.IsRunning);
+        }
+
+        /// <summary>
+        /// Run autopilot from Play Mode test.
+        /// If an error is detected in running, it will be output to `LogError` and the test will fail.
+        /// </summary>
+        /// <param name="autopilotSettingsPath">Asset file path for autopilot settings</param>
+        public static async UniTask LaunchAutopilotAsync(string autopilotSettingsPath)
+        {
+#if UNITY_EDITOR
+            var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(autopilotSettingsPath);
+            await LaunchAutopilotAsync(settings);
+#else
+            throw new InvalidOperationException("Not support run on player");
+#endif
         }
     }
 }

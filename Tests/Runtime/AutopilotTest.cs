@@ -21,7 +21,7 @@ namespace DeNA.Anjin
             autopilotSettings.sceneAgentMaps = new List<SceneAgentMap>();
             autopilotSettings.lifespanSec = 1;
 
-            await LauncherFromTest.AutopilotAsync(autopilotSettings);
+            await Launcher.LaunchAutopilotAsync(autopilotSettings);
 
             LogAssert.Expect(LogType.Log, "Launched autopilot"); // using console logger
         }
@@ -35,7 +35,7 @@ namespace DeNA.Anjin
             var spyLogger = ScriptableObject.CreateInstance<SpyLoggerAsset>();
             autopilotSettings.loggerAsset = spyLogger;
 
-            await LauncherFromTest.AutopilotAsync(autopilotSettings);
+            await Launcher.LaunchAutopilotAsync(autopilotSettings);
 
             Assert.That(spyLogger.Logs, Does.Contain("Launched autopilot")); // using spy logger
             LogAssert.NoUnexpectedReceived(); // not write to console

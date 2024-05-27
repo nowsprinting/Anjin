@@ -139,7 +139,7 @@ namespace DeNA.Anjin.Agents
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
             settings.sceneAgentMaps = new List<SceneAgentMap>();
             settings.lifespanSec = 1;
-            await LauncherFromTest.AutopilotAsync(settings);
+            await Launcher.LaunchAutopilotAsync(settings);
 
             sut = ScriptableObject.CreateInstance<OneTimeAgent>(); // Reload because domain reloaded
             Assert.That(sut.wasExecuted, Is.False); // was reset
