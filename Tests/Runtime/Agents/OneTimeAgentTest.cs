@@ -1,10 +1,12 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Settings;
 using DeNA.Anjin.TestDoubles;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
@@ -126,6 +128,21 @@ namespace DeNA.Anjin.Agents
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
             LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
+        }
+
+        [Test]
+        public async Task ResetExecutedFlagWhenLaunchAutopilot()
+        {
+            var sut = ScriptableObject.CreateInstance<OneTimeAgent>();
+            sut.wasExecuted = true;
+
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.sceneAgentMaps = new List<SceneAgentMap>();
+            settings.lifespanSec = 1;
+            await LauncherFromTest.AutopilotAsync(settings);
+
+            sut = ScriptableObject.CreateInstance<OneTimeAgent>(); // Reload because domain reloaded
+            Assert.That(sut.wasExecuted, Is.False); // was reset
         }
     }
 }
