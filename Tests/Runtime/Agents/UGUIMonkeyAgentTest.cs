@@ -10,9 +10,7 @@ using DeNA.Anjin.Utilities;
 using NUnit.Framework;
 using TestHelper.Attributes;
 using TestHelper.RuntimeInternals;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
@@ -22,17 +20,11 @@ namespace DeNA.Anjin.Agents
     [SuppressMessage("ApiDesign", "RS0030")]
     public class UGUIMonkeyAgentTest
     {
+        private const string TestScene = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
         private readonly string _defaultOutputDirectory = CommandLineArgs.GetScreenshotDirectory();
 
-        [SetUp]
-        public async Task SetUp()
-        {
-            await EditorSceneManager.LoadSceneAsyncInPlayMode(
-                "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity",
-                new LoadSceneParameters(LoadSceneMode.Single));
-        }
-
         [Test]
+        [LoadScene(TestScene)]
         public async Task Run_cancelTask_stopAgent()
         {
             var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
@@ -57,6 +49,7 @@ namespace DeNA.Anjin.Agents
         }
 
         [Test]
+        [LoadScene(TestScene)]
         public async Task Run_lifespanPassed_stopAgent()
         {
             var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
@@ -81,6 +74,7 @@ namespace DeNA.Anjin.Agents
 
         [Test]
         [FocusGameView]
+        [LoadScene(TestScene)]
         public async Task Run_DefaultScreenshotFilenamePrefix_UseAgentName()
         {
             const string AgentName = "MyMonkeyAgent";

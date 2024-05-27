@@ -6,35 +6,34 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
-using UnityEditor;
-using UnityEditor.SceneManagement;
+using TestHelper.Attributes;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin.Agents
 {
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class UGUIPlaybackAgentTest
     {
-        [SetUp]
-        public async Task SetUp()
-        {
-            await EditorSceneManager.LoadSceneAsyncInPlayMode(
-                "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity",
-                new LoadSceneParameters(LoadSceneMode.Single));
-        }
+        private const string TestScene = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
 
         [Test]
+        [LoadScene(TestScene)]
         public async Task Run_cancelTask_stopAgent()
         {
             var agent = ScriptableObject.CreateInstance<UGUIPlaybackAgent>();
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
+#if UNITY_EDITOR
             agent.recordedJson = AssetDatabase.LoadAssetAtPath<TextAsset>(
                 "Packages/com.dena.anjin/Tests/TestAssets/TapButton1x4.json");
+            // TODO: for run on player
+#endif
 
             var gameObject = new GameObject();
             var token = gameObject.GetCancellationTokenOnDestroy();
@@ -51,14 +50,18 @@ namespace DeNA.Anjin.Agents
         }
 
         [Test]
+        [LoadScene(TestScene)]
         public async Task Run_playbackFinished_stopAgent()
         {
             var agent = ScriptableObject.CreateInstance<UGUIPlaybackAgent>();
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_playbackFinished_stopAgent);
+#if UNITY_EDITOR
             agent.recordedJson = AssetDatabase.LoadAssetAtPath<TextAsset>(
                 "Packages/com.dena.anjin/Tests/TestAssets/TapButton1x1.json");
+            // TODO: for run on player
+#endif
 
             using (var cancellationTokenSource = new CancellationTokenSource())
             {

@@ -2,7 +2,6 @@
 // This software is released under the MIT License.
 
 #if UNITY_INCLUDE_TESTS
-
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -22,6 +21,7 @@ namespace DeNA.Anjin
     /// </summary>
     public static class Launcher
     {
+#if UNITY_EDITOR
         /// <summary>
         /// Reset event handlers even if domain reload is off
         /// <see href="https://docs.unity3d.com/ja/current/Manual/ConfigurableEnterPlayMode.html"/>
@@ -31,6 +31,7 @@ namespace DeNA.Anjin
         {
             EditorApplication.playModeStateChanged -= OnChangePlayModeState;
         }
+#endif
 
         /// <summary>
         /// Run autopilot
@@ -44,10 +45,12 @@ namespace DeNA.Anjin
                 return; // Normally play mode (not run autopilot)
             }
 
+#if UNITY_EDITOR
             if (!state.IsLaunchFromPlayMode)
             {
                 EditorApplication.playModeStateChanged += OnChangePlayModeState;
             }
+#endif
 
             ScreenshotStore.CleanDirectories();
 
@@ -68,6 +71,7 @@ namespace DeNA.Anjin
             }
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// Stop autopilot on play mode exit event when run on Unity editor.
         /// Not called when invoked from play mode (not registered in event listener).
@@ -88,7 +92,6 @@ namespace DeNA.Anjin
             {
                 case LaunchType.EditorEditMode:
                     Debug.Log("Exit play mode");
-                    state.Reset();
                     break;
 
                 case LaunchType.Commandline:
@@ -105,6 +108,7 @@ namespace DeNA.Anjin
 #pragma warning restore S3928
             }
         }
+#endif
 
         /// <summary>
         /// Run autopilot from Play Mode test.
@@ -148,5 +152,4 @@ namespace DeNA.Anjin
         }
     }
 }
-
 #endif

@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Settings;
 using NUnit.Framework;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin
 {
@@ -36,7 +38,9 @@ namespace DeNA.Anjin
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
             Assert.That(state.launchFrom, Is.EqualTo(LaunchType.NotSet), "Launch from is reset");
             Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally), "Exit code is reset");
+#if UNITY_EDITOR
             Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
+#endif
         }
 
         [Test]
@@ -55,7 +59,9 @@ namespace DeNA.Anjin
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
             Assert.That(state.launchFrom, Is.EqualTo(LaunchType.NotSet), "Launch from is reset");
             Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally), "Exit code is reset");
+#if UNITY_EDITOR
             Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
+#endif
         }
     }
 }

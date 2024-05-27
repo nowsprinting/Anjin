@@ -1,16 +1,19 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using DeNA.Anjin.Agents;
-using DeNA.Anjin.Editor.UI.Settings;
 using DeNA.Anjin.Settings;
 using NUnit.Framework;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+#pragma warning disable CS0618 // Type or member is obsolete
 
 namespace DeNA.Anjin
 {
@@ -24,15 +27,21 @@ namespace DeNA.Anjin
             Assume.That(AutopilotState.Instance.IsRunning, Is.False);
         }
 
+        private static AutopilotSettings CreateAutopilotSettings(int lifespanSec = 2)
+        {
+            var settings = (AutopilotSettings)ScriptableObject.CreateInstance(typeof(AutopilotSettings));
+            settings.sceneAgentMaps = new List<SceneAgentMap>();
+            settings.lifespanSec = lifespanSec;
+            return settings;
+        }
+
         [Test]
         public async Task Launch_InPlayMode_RunAutopilot()
         {
-            var testSettings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(
-                "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset");
-            var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(testSettings);
             var state = AutopilotState.Instance;
-            editor.Launch(state);
-
+            state.launchFrom = LaunchType.EditorPlayMode;
+            state.settings = CreateAutopilotSettings();
+            Launcher.LaunchAutopilot();
             await Task.Delay(200);
 
             Assert.That(state.launchFrom, Is.EqualTo(LaunchType.EditorPlayMode));
@@ -41,50 +50,50 @@ namespace DeNA.Anjin
             var autopilot = Object.FindObjectOfType<Autopilot>();
             Assert.That((bool)autopilot, Is.True, "Autopilot object is alive");
 
+            // Tear down
             await autopilot.TerminateAsync(ExitCode.Normally);
         }
 
         [Test]
         public async Task Launch_StopAutopilotThatRunInPlayMode_KeepPlayMode()
         {
-            var testSettings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(
-                "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset");
-            var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(testSettings);
+            var settings = CreateAutopilotSettings();
+            await Launcher.LaunchAutopilotAsync(settings);
+
             var state = AutopilotState.Instance;
-            editor.Launch(state);
-
-            await Task.Delay(2200); // 2sec+overhead
-
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
+#if UNITY_EDITOR
             Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
+#endif
         }
 
         [Test]
         public async Task Stop_TerminateAutopilotAndKeepPlayMode()
         {
-            var testSettings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(
-                "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTestsEndless.asset"); // Expect indefinite execution
-            var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(testSettings);
             var state = AutopilotState.Instance;
-            editor.Launch(state);
-            await Task.Delay(2000);
-            await editor.Stop();
+            state.launchFrom = LaunchType.EditorPlayMode;
+            state.settings = CreateAutopilotSettings(0); // endless
+            Launcher.LaunchAutopilot();
+            await Task.Delay(200);
+
+            var autopilot = Object.FindObjectOfType<Autopilot>();
+            await autopilot.TerminateAsync(ExitCode.Normally);
             // Note: If Autopilot stops for life before Stop, a NullReference exception is raised here.
 
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
+#if UNITY_EDITOR
             Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
+#endif
         }
 
         [Test]
         public async Task LaunchAutopilotAsync_RunAutopilot()
         {
-            var agent = ScriptableObject.CreateInstance(typeof(DoNothingAgent)) as DoNothingAgent;
+            var agent = (DoNothingAgent)ScriptableObject.CreateInstance(typeof(DoNothingAgent));
             agent.lifespanSec = 1;
 
-            var settings = ScriptableObject.CreateInstance(typeof(AutopilotSettings)) as AutopilotSettings;
-            settings.sceneAgentMaps = new List<SceneAgentMap>();
+            var settings = CreateAutopilotSettings();
             settings.fallbackAgent = agent;
-            settings.lifespanSec = 2;
 
             var beforeTimestamp = Time.time;
             await Launcher.LaunchAutopilotAsync(settings);
@@ -96,7 +105,6 @@ namespace DeNA.Anjin
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
             Assert.That(state.launchFrom, Is.EqualTo(LaunchType.NotSet), "Launch from is reset");
             Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally), "Exit code is reset");
-            Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
         }
 
         [Test]
@@ -115,7 +123,6 @@ namespace DeNA.Anjin
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
             Assert.That(state.launchFrom, Is.EqualTo(LaunchType.NotSet), "Launch from is reset");
             Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally), "Exit code is reset");
-            Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
         }
     }
 }
