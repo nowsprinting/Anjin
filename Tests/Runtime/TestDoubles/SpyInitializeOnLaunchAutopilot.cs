@@ -1,11 +1,11 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using DeNA.Anjin.Attributes;
 
-namespace DeNA.Anjin.Editor.Fakes
+namespace DeNA.Anjin.TestDoubles
 {
-    public static class FakeInitializeOnLaunchAutopilot
+    public static class SpyInitializeOnLaunchAutopilot
     {
         public static bool IsCallInitializeOnLaunchAutopilotMethod { get; private set; }
 
@@ -15,7 +15,7 @@ namespace DeNA.Anjin.Editor.Fakes
         }
 
         [InitializeOnLaunchAutopilot]
-        public static void FakeInitializeOnLaunchAutopilotMethod()
+        public static void SpyInitializeOnLaunchAutopilotMethod()
         {
             IsCallInitializeOnLaunchAutopilotMethod = true;
         }

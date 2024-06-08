@@ -120,7 +120,7 @@ namespace DeNA.Anjin
 #if UNITY_EDITOR
             if (!EditorApplication.isPlaying)
             {
-                throw new InvalidOperationException("Not support run on Edit Mode tests");
+                throw new InvalidOperationException("Not support run from Edit Mode");
             }
 #endif
             var state = AutopilotState.Instance;
@@ -147,7 +147,7 @@ namespace DeNA.Anjin
             var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(autopilotSettingsPath);
             await LaunchAutopilotAsync(settings);
 #else
-            throw new InvalidOperationException("Not support run on player");
+            throw new NotImplementedException();
 #endif
         }
     }

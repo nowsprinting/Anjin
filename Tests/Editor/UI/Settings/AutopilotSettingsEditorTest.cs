@@ -1,14 +1,17 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using DeNA.Anjin.Editor.Fakes;
+using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Editor.YieldInstructions;
 using DeNA.Anjin.Settings;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
+
+#pragma warning disable CS0618 // Type or member is obsolete
 
 namespace DeNA.Anjin.Editor.UI.Settings
 {
@@ -20,67 +23,89 @@ namespace DeNA.Anjin.Editor.UI.Settings
     [SuppressMessage("ApiDesign", "RS0030")]
     public class AutopilotSettingsEditorTest
     {
+        private const string SettingsPath = "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset";
+
         /// <summary>
         /// Detect disabled domain reloading. Because test will not work as intended.
         /// </summary>
-        [SetUp]
-        public void SetUp()
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
         {
             if (EditorSettings.enterPlayModeOptionsEnabled)
             {
                 Assume.That(EditorSettings.enterPlayModeOptions.HasFlag(EnterPlayModeOptions.DisableDomainReload),
                     Is.False, "Enabled domain reloading option");
             }
-            else
-            {
-                Assume.That(EditorSettings.enterPlayModeOptionsEnabled, Is.False, "Enabled domain reloading");
-            }
-        }
-
-        [UnityTearDown]
-        public IEnumerator UnityTearDown()
-        {
-            if (EditorApplication.isPlaying)
-            {
-                yield return new ExitPlayMode();
-                // Impossible waiting until stop in edit mode tests. so switch to edit mode and exit.
-            }
         }
 
         [UnityTest]
-        public IEnumerator Launch_OnEditMode_RunAutopilotOnPlayMode()
+        public IEnumerator Launch_InEditMode_RunAutopilot()
         {
-            var testSettings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(
-                "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset");
-            var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(testSettings);
+            AutopilotState.Instance.Reset();
+
+            var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(SettingsPath);
+            var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(settings);
+            editor.Launch(); // Note: Can not call editor.OnInspectorGUI() and GUILayout.Button()
+            yield return new WaitForAutopilotToRun();
+
             var state = AutopilotState.Instance;
-            editor.Launch(state); // Note: Can not call editor.OnInspectorGUI() and GUILayout.Button()
-
-            yield return new WaitForDomainReload(); // Wait for domain reloading by switching play mode
-            Assume.That(EditorApplication.isPlaying, Is.True, "Switched to play mode");
-
-            state = AutopilotState.Instance; // Reacquire because lost in domain reloading
             Assert.That(state.launchFrom, Is.EqualTo(LaunchType.EditorEditMode));
-            Assert.That(state.IsRunning, Is.True, "AutopilotState is running");
+            Assert.That(state.IsRunning, Is.True);
 
-            var autopilot = Object.FindObjectOfType<Autopilot>();
-            Assert.That((bool)autopilot.gameObject, Is.True, "Autopilot object is alive");
+            // Tear down
+            yield return AutopilotSettingsEditor.Stop().ToCoroutine();
         }
 
         [UnityTest]
-        public IEnumerator Launch_CallMethodWithInitializeOnLaunchAutopilotAttribute()
+        public IEnumerator Launch_InPlayMode_RunAutopilot()
         {
-            FakeInitializeOnLaunchAutopilot.Reset();
+            AutopilotState.Instance.Reset();
+            yield return new EnterPlayMode();
 
-            var testSettings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(
-                "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset");
-            var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(testSettings);
+            var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(SettingsPath);
+            var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(settings);
+            editor.Launch(); // Note: Can not call editor.OnInspectorGUI() and GUILayout.Button()
+            yield return new WaitForAutopilotToRun();
+
             var state = AutopilotState.Instance;
-            editor.Launch(state); // Note: Can not call editor.OnInspectorGUI() and GUILayout.Button()
+            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.EditorPlayMode));
+            Assert.That(state.IsRunning, Is.True);
 
-            yield return new WaitForDomainReload(); // Wait for domain reloading by switching play mode
+            // Tear down
+            yield return AutopilotSettingsEditor.Stop().ToCoroutine();
+        }
 
-            Assert.That(FakeInitializeOnLaunchAutopilot.IsCallInitializeOnLaunchAutopilotMethod, Is.True);
+        [UnityTest]
+        public IEnumerator Stop_LaunchFromEditMode_TerminateAutopilotAndExitPlayMode()
+        {
+            AutopilotState.Instance.Reset();
+
+            var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(SettingsPath);
+            var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(settings);
+            editor.Launch(); // Note: Can not call editor.OnInspectorGUI() and GUILayout.Button()
+            yield return new WaitForAutopilotToRun();
+
+            yield return AutopilotSettingsEditor.Stop().ToCoroutine();
+            yield return null;
+            Assert.That(Object.FindObjectOfType<Autopilot>(), Is.Null, "Autopilot is terminated");
+            Assert.That(EditorApplication.isPlaying, Is.False, "Exit play mode");
+        }
+
+        [UnityTest]
+        public IEnumerator Stop_LaunchFromPlayMode_TerminateAutopilotAndKeepPlayMode()
+        {
+            AutopilotState.Instance.Reset();
+            yield return new EnterPlayMode();
+
+            var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(SettingsPath);
+            var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(settings);
+            editor.Launch(); // Note: Can not call editor.OnInspectorGUI() and GUILayout.Button()
+            yield return new WaitForAutopilotToRun();
+
+            yield return AutopilotSettingsEditor.Stop().ToCoroutine();
+            yield return null;
+            Assert.That(Object.FindObjectOfType<Autopilot>(), Is.Null, "Autopilot is terminated");
+            Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
         }
     }
 }

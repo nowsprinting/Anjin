@@ -48,7 +48,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
 
         private static readonly string s_reporter = L10n.Tr("Reporter");
         private static readonly string s_reporterTooltip = L10n.Tr("Reporter that called when some errors occurred in target application");
-        
+
         private static readonly string s_slackToken = L10n.Tr("Slack Token");
         private static readonly string s_slackTokenTooltip = L10n.Tr("Slack API token");
         private static readonly string s_slackChannels = L10n.Tr("Slack Channels");
@@ -81,14 +81,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_stopButton = L10n.Tr("Stop");
         private const float SpacerPixels = 10f;
         private const float SpacerPixelsUnderHeader = 4f;
-
-        private AutopilotSettings _settings;
-
-        private void OnEnable()
-        {
-            _settings = target as AutopilotSettings;
-            Assert.IsNotNull(_settings);
-        }
 
         /// <inheritdoc/>
         public override void OnInspectorGUI()
@@ -160,7 +152,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
             {
                 if (GUILayout.Button(s_runButton))
                 {
-                    Launch(state);
+                    Launch();
                 }
             }
         }
@@ -173,15 +165,20 @@ namespace DeNA.Anjin.Editor.UI.Settings
         }
 
         [SuppressMessage("ApiDesign", "RS0030")]
-        internal async UniTask Stop()
+        internal static async UniTask Stop()
         {
             var autopilot = FindObjectOfType<Autopilot>();
-            await autopilot.TerminateAsync(ExitCode.Normally);
+            if (autopilot)
+            {
+                await autopilot.TerminateAsync(ExitCode.Normally);
+            }
         }
 
-        internal void Launch(AutopilotState state)
+        internal void Launch()
         {
-            state.settings = _settings;
+            var state = AutopilotState.Instance;
+            state.settings = (AutopilotSettings)target;
+
             if (EditorApplication.isPlaying)
             {
                 state.launchFrom = LaunchType.EditorPlayMode;
