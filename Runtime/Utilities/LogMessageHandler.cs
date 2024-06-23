@@ -43,7 +43,12 @@ namespace DeNA.Anjin.Utilities
         /// <param name="type">Log message type</param>
         public async void HandleLog(string logString, string stackTrace, LogType type)
         {
-            if (IsIgnoreMessage(logString, stackTrace, type, _settings))
+            if (_settings == null)
+            {
+                return;
+            }
+
+            if (IsIgnoreMessage(logString, stackTrace, type))
             {
                 return;
             }
@@ -63,35 +68,34 @@ namespace DeNA.Anjin.Utilities
             }
         }
 
-        private static bool IsIgnoreMessage(string logString, string stackTrace, LogType type,
-            AutopilotSettings settings)
+        private bool IsIgnoreMessage(string logString, string stackTrace, LogType type)
         {
             if (type == LogType.Log)
             {
                 return true;
             }
 
-            if (type == LogType.Exception && !settings.handleException)
+            if (type == LogType.Exception && !_settings.handleException)
             {
                 return true;
             }
 
-            if (type == LogType.Assert && !settings.handleAssert)
+            if (type == LogType.Assert && !_settings.handleAssert)
             {
                 return true;
             }
 
-            if (type == LogType.Error && !settings.handleError)
+            if (type == LogType.Error && !_settings.handleError)
             {
                 return true;
             }
 
-            if (type == LogType.Warning && !settings.handleWarning)
+            if (type == LogType.Warning && !_settings.handleWarning)
             {
                 return true;
             }
 
-            foreach (var ignoreMessage in settings.ignoreMessages)
+            foreach (var ignoreMessage in _settings.ignoreMessages)
             {
                 if (logString.Contains(ignoreMessage))
                 {
