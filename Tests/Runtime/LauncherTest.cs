@@ -8,7 +8,6 @@ using DeNA.Anjin.Settings;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 
@@ -20,7 +19,6 @@ namespace DeNA.Anjin
     /// <remarks>
     /// Note: Test cases of launch/terminate from Edit Mode are in <see cref="Editor.UI.Settings.AutopilotSettingsEditorTest"/>.
     /// </remarks>
-    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor)] // Fail on Unity 2019 Linux editor
     [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
     public class LauncherTest
     {

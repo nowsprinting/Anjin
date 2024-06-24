@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +15,6 @@ using Object = UnityEngine.Object;
 
 namespace DeNA.Anjin.Agents
 {
-    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class OneTimeAgentTest
     {
         private static int s_childAgentCount;
@@ -137,7 +135,6 @@ namespace DeNA.Anjin.Agents
             sut.wasExecuted = true;
 
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            settings.sceneAgentMaps = new List<SceneAgentMap>();
             settings.lifespanSec = 1;
             await Launcher.LaunchAutopilotAsync(settings);
 

@@ -16,7 +16,6 @@ using UnityEditor;
 
 namespace DeNA.Anjin.Agents
 {
-    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class UGUIPlaybackAgentTest
     {
         private const string TestScene = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";

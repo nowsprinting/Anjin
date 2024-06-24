@@ -37,7 +37,7 @@ namespace DeNA.Anjin.Agents
                 current.wasExecuted = false;
             }
 #if UNITY_EDITOR
-            // Reset assets
+            // Reset asset files (in Editor only)
             foreach (var guid in AssetDatabase.FindAssets("t:OneTimeAgent"))
             {
                 var so = AssetDatabase.LoadAssetAtPath<OneTimeAgent>(AssetDatabase.GUIDToAssetPath(guid));
