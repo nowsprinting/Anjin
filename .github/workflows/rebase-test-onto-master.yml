@@ -1,0 +1,40 @@
+# Copyright (c) 2023-2025 Koji Hasegawa.
+# This software is released under the MIT License.
+
+name: Rebase test onto master
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  rebase-test-onto-master:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+
+    steps:
+        - uses: actions/checkout@v4
+          with:
+            ref: test
+            fetch-depth: 100
+
+        - name: Rebase test onto master
+          run: |
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git fetch origin master
+            git rebase origin/master
+            git push -f origin HEAD
+          env:
+            GH_TOKEN: ${{ secrets.PAT_TOKEN }}  # Using personal access token to trigger test workflow
