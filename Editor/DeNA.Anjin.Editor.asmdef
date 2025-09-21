@@ -5,7 +5,7 @@
         "UniTask",
         "DeNA.Anjin",
         "TestHelper.RuntimeInternals",
-        "TestHelper.Monkey.Annotations"
+        "TestHelper.UI.Annotations"
     ],
     "includePlatforms": [
         "Editor"

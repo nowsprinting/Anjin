@@ -6,8 +6,8 @@
         "Unity.AutomatedQA",
         "Unity.Multiplayer.Playmode",
         "UniTask",
-        "TestHelper.Monkey",
-        "TestHelper.Monkey.Annotations",
+        "TestHelper.UI",
+        "TestHelper.UI.Annotations",
         "TestHelper.Random",
         "TestHelper.RuntimeInternals"
     ],

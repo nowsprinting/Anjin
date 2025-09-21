@@ -9,7 +9,7 @@
         "UniTask",
         "TestHelper",
         "TestHelper.RuntimeInternals",
-        "TestHelper.Monkey"
+        "TestHelper.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
