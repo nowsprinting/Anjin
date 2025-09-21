@@ -129,7 +129,7 @@ namespace DeNA.Anjin.Agents
             Assert.That(spyTerminatable.CapturedMessage, Does.StartWith(
                 "TimeoutException: Interactive component not found in 1 seconds"));
             Assert.That(spyTerminatable.CapturedStackTrace, Does.StartWith(
-                "  at TestHelper.Monkey.Monkey"));
+                "  at TestHelper.UI.Monkey"));
             Assert.That(spyTerminatable.CapturedReporting, Is.True);
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
@@ -157,7 +157,7 @@ namespace DeNA.Anjin.Agents
             Assert.That(spyTerminatable.CapturedMessage, Does.StartWith(
                 "InfiniteLoopException: Found loop in the operation sequence"));
             Assert.That(spyTerminatable.CapturedStackTrace, Does.StartWith(
-                "  at TestHelper.Monkey.Monkey"));
+                "  at TestHelper.UI.Monkey"));
             Assert.That(spyTerminatable.CapturedReporting, Is.True);
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");

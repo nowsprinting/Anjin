@@ -8,11 +8,11 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Strategies;
-using TestHelper.Monkey;
-using TestHelper.Monkey.Annotations.Enums;
-using TestHelper.Monkey.Exceptions;
-using TestHelper.Monkey.Operators;
-using TestHelper.Monkey.Random;
+using TestHelper.UI;
+using TestHelper.UI.Annotations.Enums;
+using TestHelper.UI.Exceptions;
+using TestHelper.UI.Operators;
+using TestHelper.UI.Random;
 using TestHelper.Random;
 using UnityEngine;
 
@@ -137,9 +137,9 @@ namespace DeNA.Anjin.Agents
                     : null,
                 Operators = new IOperator[]
                 {
-                    new UGUIClickOperator(),                                           //
-                    new UGUIClickAndHoldOperator(holdMillis: touchAndHoldDelayMillis), //
-                    new UGUITextInputOperator(
+                    new UguiClickOperator(),                                           //
+                    new UguiClickAndHoldOperator(holdMillis: touchAndHoldDelayMillis), //
+                    new UguiTextInputOperator(
                         randomStringParams: GetRandomStringParameters,
                         randomString: new RandomStringImpl(random)),
                 },

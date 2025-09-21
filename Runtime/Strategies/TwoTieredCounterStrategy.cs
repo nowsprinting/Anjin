@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using DeNA.Anjin.Attributes;
-using TestHelper.Monkey.ScreenshotFilenameStrategies;
+using TestHelper.UI.ScreenshotFilenameStrategies;
 
 namespace DeNA.Anjin.Strategies
 {
