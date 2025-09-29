@@ -147,7 +147,7 @@ namespace DeNA.Anjin.Agents
 
             try
             {
-                await Monkey.Run(config, cancellationToken);
+                await Monkey.Run(config, cancellationToken: cancellationToken);
             }
             catch (TimeoutException e)
             {
