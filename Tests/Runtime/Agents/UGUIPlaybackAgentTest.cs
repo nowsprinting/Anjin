@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+#if ENABLE_AQA
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
@@ -131,3 +132,4 @@ namespace DeNA.Anjin.Agents
         }
     }
 }
+#endif
