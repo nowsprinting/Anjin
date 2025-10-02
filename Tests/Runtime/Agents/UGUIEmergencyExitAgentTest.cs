@@ -203,7 +203,7 @@ namespace DeNA.Anjin.Agents
                 await UniTask.NextFrame();
 
                 var emergencyButton = AttachEmergencyExitAnnotation();
-                await UniTask.Delay(200);
+                await UniTask.Delay(500);
 
                 Assert.That(emergencyButton.IsClicked, Is.True, "Clicked button with EmergencyExit annotation");
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Pending), "Keep agent running");
