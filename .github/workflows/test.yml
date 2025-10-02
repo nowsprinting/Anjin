@@ -32,17 +32,17 @@ jobs:
           - 2021.3.45f1
           - 2022.3.62f1
           - 6000.0.58f1
-          - 6000.2.4f1
+          - 6000.2.6f1
         depends:
           - min # use required version of dependencies
         testMode:
           - All # run tests in editor
         include:
-          - unityVersion: 6000.2.4f1
+          - unityVersion: 6000.2.6f1
             depends: latest # use latest version of dependencies
             testMode: All
             octocov: true
-          - unityVersion: 6000.2.4f1
+          - unityVersion: 6000.2.6f1
             depends: min
             testMode: Standalone  # run tests on player
 
