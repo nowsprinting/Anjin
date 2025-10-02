@@ -25,6 +25,11 @@
             "name": "com.unity.multiplayer.playmode",
             "expression": "",
             "define": "ENABLED_MPPM"
+        },
+        {
+            "name": "com.unity.automated-testing",
+            "expression": "",
+            "define": "ENABLE_AQA"
         }
     ],
     "noEngineReferences": false

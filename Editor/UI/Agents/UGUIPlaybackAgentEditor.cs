@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+#if ENABLE_AQA
 using System.Diagnostics.CodeAnalysis;
 using DeNA.Anjin.Agents;
 using UnityEditor;
@@ -34,3 +35,4 @@ namespace DeNA.Anjin.Editor.UI.Agents
         }
     }
 }
+#endif
