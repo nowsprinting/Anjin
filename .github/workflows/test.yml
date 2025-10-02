@@ -10,7 +10,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions: {}
+permissions: { }
 
 defaults:
   run:
@@ -30,24 +30,24 @@ jobs:
           - 2019.4.40f1
           - 2020.3.48f1
           - 2021.3.45f1
-          - 2022.3.59f1
-          - 2023.2.20f1
-          - 6000.0.41f1
+          - 2022.3.62f1
+          - 6000.0.58f1
+          - 6000.2.6f1
         depends:
           - min # use required version of dependencies
         testMode:
           - All # run tests in editor
         include:
-          - unityVersion: 6000.0.41f1
+          - unityVersion: 6000.2.6f1
             depends: latest # use latest version of dependencies
             testMode: All
             octocov: true
-          - unityVersion: 6000.0.41f1
+          - unityVersion: 6000.2.6f1
             depends: min
             testMode: Standalone  # run tests on player
 
     steps:
-      - name: Crete project for tests
+      - name: Create project for tests
         uses: nowsprinting/create-unity-project-action@fab595f04a568aa51a94b28b7202b861b0f7d8b2 # v3
         with:
           project-path: UnityProject~
