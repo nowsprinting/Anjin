@@ -106,6 +106,13 @@ jobs:
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
         if: ${{ matrix.depends == 'latest' }}
 
+      - name: Install Automated QA package (Unity version must be below 6000.2)
+        run: |
+          npm install -g openupm-cli
+          openupm add -f com.unity.automated-testing
+        working-directory: ${{ env.CREATED_PROJECT_PATH }}
+        if: ${{ matrix.unityVersion < '6000.2' }}
+
       - name: Set coverage assembly filters
         run: |
           assemblies=$(find ${{ env.PACKAGE_PATH }} -name "*.asmdef" | sed -e s/.*\\//\+/ | sed -e s/\\.asmdef// | sed -e s/^.*\\.Tests//)
