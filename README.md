@@ -316,7 +316,7 @@ An instance of this Agent (.asset file) can contain the following.
 > See **Anjin Annotations** below for more information.
 
 
-### UGUIPlaybackAgent
+### UGUIPlaybackAgent (optional)
 
 This is an Agent that playback uGUI operations with the Recorded Playback feature of the [Automated QA](https://docs.unity3d.com/Packages/com.unity.automated-testing@latest) package.
 
@@ -334,12 +334,13 @@ Note that the Recorded Playback function in Automated QA can record operations a
 Therefore, please be careful to record in units of Scenes.
 
 > [!IMPORTANT]  
+> UGUIPlaybackAgent is an optional functionality. To use it, you need to install the [Automated QA](https://docs.unity3d.com/Packages/com.unity.automated-testing@latest) package separately via the Package Manager window.
+> The Automated QA package development has been put on hold until further notice.
+
+> [!IMPORTANT]  
 > The Automated QA package outputs `LogType.Error` to the console when playback fails (e.g., the target Button cannot be found). The following setting is required to detect this and terminate the autopilot.
 > 1. Add [ErrorHandlerAgent](#ErrorHandlerAgent) and set `Handle Error` to `Terminate Autopilot`.
 > 2. Add [ConsoleLogger](#ConsoleLogger) and set `Filter LogType` to `Error` or higher.
-
-> [!IMPORTANT]  
-> The Automated QA package is in the preview stage. Please note that destructive changes may occur, and the package itself may be discontinued or withdrawn.
 
 
 ### DoNothingAgent
