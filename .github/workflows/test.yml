@@ -4,7 +4,19 @@
 name: Test
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types: [ opened, synchronize, reopened ]  # Same as default
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - '!.github/workflows/test.yml'
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - '!.github/workflows/test.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
