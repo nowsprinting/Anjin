@@ -6,7 +6,7 @@ name: Lint workflow files
 on:
   push:
     branches:
-      - master
+      - v2
     paths:
       - .github/workflows/**
   pull_request:
