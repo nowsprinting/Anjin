@@ -274,7 +274,7 @@ The following Agent types are provided. These can be used as they are, or game-t
 ### UGUIMonkeyAgent
 
 This is an Agent that randomly manipulates uGUI components.
-This Agent implementation uses open source [Monkey Test Helper](https://github.com/nowsprinting/test-helper.monkey) package.
+This Agent implementation uses open source [UI Test Helper](https://github.com/nowsprinting/test-helper.ui) package.
 
 An instance of this Agent (.asset file) can contain the following.
 
@@ -311,7 +311,7 @@ An instance of this Agent (.asset file) can contain the following.
 </dl>
 
 > [!TIP]  
-> If you have a `GameObject` that you want to avoid manipulation by the `UGUIMonkeyAgent`, attach the `IgnoreAnnotation` component in the `TestHelper.Monkey.Annotations` assembly.
+> If you have a `GameObject` that you want to avoid manipulation by the `UGUIMonkeyAgent`, attach the `IgnoreAnnotation` component in the `TestHelper.UI.Annotations` assembly.
 > See **Anjin Annotations** below for more information.
 
 

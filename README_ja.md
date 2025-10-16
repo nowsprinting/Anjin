@@ -277,7 +277,7 @@ public async Task LaunchAutopilotInTest()
 ### UGUIMonkeyAgent
 
 uGUIのコンポーネントをランダムに操作するAgentです。
-実装にはオープンソースの [Monkey Test Helper](https://github.com/nowsprinting/test-helper.monkey) パッケージを使用しています。
+実装にはオープンソースの [UI Test Helper](https://github.com/nowsprinting/test-helper.ui) パッケージを使用しています。
 
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
@@ -314,7 +314,7 @@ uGUIのコンポーネントをランダムに操作するAgentです。
 </dl>
 
 > [!TIP]  
-> `UGUIMonkeyAgent` によって操作されたくない `GameObject` がある場合、`TestHelper.Monkey.Annotations` アセンブリに含まれる `IgnoreAnnotation` コンポーネントをアタッチしておくことで操作を回避できます。
+> `UGUIMonkeyAgent` によって操作されたくない `GameObject` がある場合、`TestHelper.UI.Annotations` アセンブリに含まれる `IgnoreAnnotation` コンポーネントをアタッチしておくことで操作を回避できます。
 > 詳しくは後述の**Anjin Annotations**を参照してください。
 
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2023 DeNA Co., Ltd.
+# Copyright (c) 2023-2025 DeNA Co., Ltd.
 # This software is released under the MIT License.
 
 PACKAGE_HOME?=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
@@ -102,8 +102,8 @@ create_project:
 	openupm add -c $(PROJECT_HOME) -f com.unity.testtools.codecoverage
 	openupm add -c $(PROJECT_HOME) -f com.cysharp.unitask
 	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper
-	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper.monkey
 	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper.random
+	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper.ui
 	openupm add -c $(PROJECT_HOME) -ft $(PACKAGE_NAME)@file:../../
 
 .PHONY: remove_project

@@ -6,9 +6,9 @@ using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Annotations;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Strategies;
-using TestHelper.Monkey;
-using TestHelper.Monkey.DefaultStrategies;
-using TestHelper.Monkey.Operators;
+using TestHelper.UI;
+using TestHelper.UI.Strategies;
+using TestHelper.UI.Operators;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,7 +41,6 @@ namespace DeNA.Anjin.Agents
             Logger.Log($"Enter {this.name}.Run()");
 
             _reachableStrategy = new DefaultReachableStrategy();
-            _clickOperator = new UGUIClickOperator();
             _screenshotOptions = screenshot
                 ? new ScreenshotOptions
                 {
@@ -50,6 +49,7 @@ namespace DeNA.Anjin.Agents
                     FilenameStrategy = new TwoTieredCounterStrategy(this.name),
                 }
                 : null;
+            _clickOperator = new UguiClickOperator(logger: Logger, screenshotOptions: _screenshotOptions);
 
             try
             {
@@ -100,7 +100,7 @@ namespace DeNA.Anjin.Agents
                 return;
             }
 
-            await _clickOperator.OperateAsync(button, raycastResult, Logger, _screenshotOptions, cancellationToken);
+            await _clickOperator.OperateAsync(button, raycastResult, cancellationToken);
         }
     }
 }
