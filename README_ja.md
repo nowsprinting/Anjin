@@ -1,7 +1,12 @@
 # Anjin
 
-[![Meta file check](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml/badge.svg)](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml)
-[![openupm](https://img.shields.io/npm/v/com.dena.anjin?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.dena.anjin/)
+[![Meta file check](https://github.com/nowsprinting/Anjin/actions/workflows/metacheck.yml/badge.svg)](https://github.com/nowsprinting/Anjin/actions/workflows/metacheck.yml)
+[![Test](https://github.com/nowsprinting/Anjin/actions/workflows/test.yml/badge.svg)](https://github.com/nowsprinting/Anjin/actions/workflows/test.yml)
+
+> [!WARNING]  
+> This repository is forked from [DeNA/Anjin](https://github.com/DeNA/Anjin) v1.9.0
+
+
 
 Click [English](./README.md) for English page if you need.
 
