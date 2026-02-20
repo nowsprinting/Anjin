@@ -12,7 +12,7 @@ on:
       - '!.github/workflows/test.yml'
   push:
     branches:
-      - v2
+      - master
     paths-ignore:
       - '**.md'
       - '.github/**'

@@ -6,7 +6,7 @@ name: Meta file check
 on:
   push:
     branches:
-      - v2
+      - master
   pull_request:
     types: [ opened, synchronize, reopened ]  # Same as default
 

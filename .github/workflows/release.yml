@@ -6,7 +6,7 @@ name: Release if bump version number
 on:
   push:
     branches:
-      - v2
+      - master
     paths:
       - package.json
 
