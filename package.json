@@ -6,7 +6,7 @@
   "changelogUrl": "https://github.com/DeNA/Anjin/releases",
   "dependencies": {
     "com.cysharp.unitask": "2.3.3",
-    "com.nowsprinting.test-helper.ui": "1.1.0"
+    "com.nowsprinting.test-helper.ui": "1.2.2"
   },
   "displayName": "Anjin",
   "documentationUrl": "https://github.com/DeNA/Anjin/blob/master/README.md",
