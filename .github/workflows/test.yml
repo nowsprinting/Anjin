@@ -39,22 +39,20 @@ jobs:
       fail-fast: false
       matrix:
         unityVersion: # Available versions see: https://game.ci/docs/docker/versions
-          - 2019.4.40f1
-          - 2020.3.48f1
-          - 2021.3.45f1
-          - 2022.3.62f1
-          - 6000.0.58f1
-          - 6000.2.6f1
+          - 2019.4.41f2
+          - 2022.3.62f3 # Non-Enterprise LTS
+          - 6000.0.67f1
+          - 6000.3.7f1
         depends:
           - min # use required version of dependencies
         testMode:
           - All # run tests in editor
         include:
-          - unityVersion: 6000.2.6f1
+          - unityVersion: 6000.3.7f1
             depends: latest # use latest version of dependencies
             testMode: All
             octocov: true
-          - unityVersion: 6000.2.6f1
+          - unityVersion: 6000.0.58f1 # "Error building Player because scripts are compiling" in 6000.0.65f1 and 6000.3.4f1
             depends: min
             testMode: Standalone  # run tests on player
 
@@ -118,12 +116,12 @@ jobs:
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
         if: ${{ matrix.depends == 'latest' }}
 
-      - name: Install Automated QA package (Unity version must be below 6000.2)
+      - name: Install Automated QA package (Unity version must be below 6000)
         run: |
           npm install -g openupm-cli
           openupm add -f com.unity.automated-testing
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
-        if: ${{ matrix.unityVersion < '6000.2' }}
+        if: ${{ matrix.unityVersion < '6000' }}
 
       - name: Set coverage assembly filters
         run: |
