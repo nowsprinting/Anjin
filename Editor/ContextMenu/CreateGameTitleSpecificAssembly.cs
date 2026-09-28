@@ -19,7 +19,7 @@ namespace DeNA.Anjin.Editor.ContextMenu
         public static void CreateGameTitleSpecificAssemblyMenuItem()
         {
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
-                0,
+                default,
                 ScriptableObject.CreateInstance<DoCreateGameTitleSpecificAssembly>(),
                 "New Folder",
                 EditorGUIUtility.IconContent(EditorResources.folderIconName).image as Texture2D,

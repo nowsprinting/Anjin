@@ -52,7 +52,7 @@ namespace DeNA.Anjin.Editor.ContextMenu
         public void Action_CreatedRuntimeFolderContainingAsmdef()
         {
             var sut = ScriptableObject.CreateInstance<DoCreateGameTitleSpecificAssembly>();
-            sut.Action(0, _path, null);
+            sut.Action(default, _path, null);
 
             var asmdefPath = Path.Combine(_path, $"{AssemblyName}.asmdef");
             var asmdefFile = AssetDatabase.LoadAssetAtPath<AssemblyDefinitionAsset>(asmdefPath);
