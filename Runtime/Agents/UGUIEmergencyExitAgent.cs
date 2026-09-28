@@ -106,9 +106,9 @@ namespace DeNA.Anjin.Agents
         /// <summary>
         /// Returns the identifier of the GameObject for logging.
         /// </summary>
-#if UNITY_6000_3_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
         private static EntityId GetIdForLog(GameObject gameObject) => gameObject.GetEntityId();
-        // Note: Object.GetInstanceID() is deprecated in Unity 6000.3 and became a compile error in Unity 6000.6.
+        // Note: Unity 6000.4 replaces InstanceID with EntityId, and Unity 6000.5 turns the obsolete InstanceID APIs into compile errors.
 #else
         private static int GetIdForLog(GameObject gameObject) => gameObject.GetInstanceID();
 #endif
