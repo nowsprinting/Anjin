@@ -25,43 +25,21 @@ In addition to the built-in ones, you can implement and use ones specific to you
 
 ## Installation
 
-You can choose from two typical installation methods.
-
-### Install via Package Manager window
-
 1. Open the **Package Manager** tab in Project Settings window (**Editor > Project Settings**)
-2. Click **+** button under the **Scoped Registries** and enter the following settings (figure 1.):
+2. Click **+** button under the **Scoped Registries** and enter the following settings:
    1. **Name:** `package.openupm.com`
    2. **URL:** `https://package.openupm.com`
-   3. **Scope(s):** `com.dena`, `com.cysharp`, and `com.nowsprinting`
-3. Open the Package Manager window (**Window > Package Manager**) and select **My Registries** in registries drop-down list (figure 2.)
-4. Click **Install** button on the `com.dena.anjin` package
+   3. **Scope(s):** `com.cysharp` and `com.nowsprinting`
+3. Open the Package Manager window (**Window > Package Manager**), click **+ > Install package from git URL...**, enter `https://github.com/nowsprinting/Anjin.git`, and click **Install**
 
-**Figure 1.** Package Manager tab in Project Settings window.
+> [!IMPORTANT]\
+> The scoped registry is required to resolve the dependent packages (UniTask and Test Helper UI) used within Anjin.
 
-![](Documentation~/ProjectSettings_Dark.png#gh-dark-mode-only)
-![](Documentation~/ProjectSettings_Light.png#gh-light-mode-only)
+> [!NOTE]\
+> `UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE` is set in the Define Constraints of the Assembly Definition File, So excluded from the release build in principle.
 
-**Figure 2.** Select registries drop-down list in Package Manager window.
-
-![](Documentation~/PackageManager_Dark.png#gh-dark-mode-only)
-![](Documentation~/PackageManager_Light.png#gh-light-mode-only)
-
-> [!NOTE]  
-> Do not forget to add `com.cysharp` and `com.nowsprinting` into scopes. These are used within Anjin.
-
-> [!NOTE]  
+> [!NOTE]\
 > Required install [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3 or later for running tests (when adding to the `testables` in package.json).
-
-### Install via OpenUPM-CLI
-
-If you installed [openupm-cli](https://github.com/openupm/openupm-cli), run the command below:
-
-```bash
-openupm add com.dena.anjin
-```
-
-`UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE` is set in the Define Constraints of the Assembly Definition File, So excluded from the release build in principle.
 
 
 ### Recommended .gitignore

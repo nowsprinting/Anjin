@@ -25,43 +25,22 @@ Agentとは、UI操作のプレイバックやモンキーテストなど、特�
 
 ## インストール方法
 
-主に2通りの方法でインストールできます。
-
-### Package Manager ウィンドウを使用する場合
-
 1. Project Settings ウィンドウ（**Editor > Project Settings**）にある、**Package Manager** タブを開きます
-2. **Scoped Registries** の下にある **+** ボタンをクリックし、次の項目を設定します（図 1）
+2. **Scoped Registries** の下にある **+** ボタンをクリックし、次の項目を設定します
    1. **Name:** `package.openupm.com`
    2. **URL:** `https://package.openupm.com`
-   3. **Scope(s):** `com.dena`, `com.cysharp`, and `com.nowsprinting`
-3. Package Managerウィンドウを開き（**Window > Package Manager**）、レジストリ選択ドロップダウンで **My Registries** を選択します（図 2）
-4. `com.dena.anjin` パッケージの **Install** ボタンをクリックします
+   3. **Scope(s):** `com.cysharp` and `com.nowsprinting`
+3. Package Managerウィンドウ（**Window > Package Manager**）で **+ > Install package from git URL...** を選択し、`https://github.com/nowsprinting/Anjin.git` を入力して **Install** ボタンをクリックします
 
-**図 1.** Project Settings ウィンドウの Package Manager タブ
+> [!IMPORTANT]\
+> Scoped Registryは、Anjin内で使用している依存パッケージ（UniTask および Test Helper UI）の解決に必要です。
 
-![](Documentation~/ProjectSettings_Dark.png#gh-dark-mode-only)
-![](Documentation~/ProjectSettings_Light.png#gh-light-mode-only)
+> [!NOTE]\
+> Assembly Definition FileのDefine Constraintsに `UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE` が設定されていますので、原則リリースビルドからは除外されます。
 
-**図 2.** Package Manager ウィンドウのレジストリ選択ドロップダウン
-
-![](Documentation~/PackageManager_Dark.png#gh-dark-mode-only)
-![](Documentation~/PackageManager_Light.png#gh-light-mode-only)
-
-> [!NOTE]  
-> scopesに `com.cysharp` と `com.nowsprinting` を忘れず追加してください。Anjin内で使用しています。
-
-> [!NOTE]  
+> [!NOTE]\
 > Anjinパッケージ内のテストを実行する場合（package.jsonの `testables` に追加するとき）は、[Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) パッケージ v1.3以上が必要です。
 
-### openupm-cli を使用する場合
-
-[openupm-cli](https://github.com/openupm/openupm-cli) がインストールされている状態で、ターミナルから次のコマンドを実行します。
-
-```bash
-openupm add com.dena.anjin
-```
-
-Assembly Definition FileのDefine Constraintsに `UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE` が設定されていますので、原則リリースビルドからは除外されます。
 
 ### 推奨.gitignore
 
