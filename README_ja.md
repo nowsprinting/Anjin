@@ -3,8 +3,10 @@
 [![Meta file check](https://github.com/nowsprinting/Anjin/actions/workflows/metacheck.yml/badge.svg)](https://github.com/nowsprinting/Anjin/actions/workflows/metacheck.yml)
 [![Test](https://github.com/nowsprinting/Anjin/actions/workflows/test.yml/badge.svg)](https://github.com/nowsprinting/Anjin/actions/workflows/test.yml)
 
-> [!WARNING]  
-> This repository is forked from [DeNA/Anjin](https://github.com/DeNA/Anjin) v1.9.0
+> [!CAUTION]\
+> このリポジトリは [DeNA/Anjin](https://github.com/DeNA/Anjin) v1.9.0 からフォークしたものです。
+>
+> フォーク後の変更点は [CHANGELOG.md](./CHANGELOG.md) を参照してください。
 
 
 

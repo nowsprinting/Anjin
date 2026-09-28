@@ -3,8 +3,10 @@
 [![Meta file check](https://github.com/nowsprinting/Anjin/actions/workflows/metacheck.yml/badge.svg)](https://github.com/nowsprinting/Anjin/actions/workflows/metacheck.yml)
 [![Test](https://github.com/nowsprinting/Anjin/actions/workflows/test.yml/badge.svg)](https://github.com/nowsprinting/Anjin/actions/workflows/test.yml)
 
-> [!WARNING]  
+> [!CAUTION]\
 > This repository is forked from [DeNA/Anjin](https://github.com/DeNA/Anjin) v1.9.0
+>
+> See [CHANGELOG.md](./CHANGELOG.md) for changes since forked.
 
 
 

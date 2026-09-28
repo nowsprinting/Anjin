@@ -20,6 +20,7 @@
     "Runtime.meta",
     "Tests/",
     "Tests.meta",
+    "CHANGELOG.md*",
     "LICENSE.txt*",
     "package.json*",
     "README*"
