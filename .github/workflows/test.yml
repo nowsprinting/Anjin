@@ -35,112 +35,108 @@ jobs:
     permissions:
       contents: read
       checks: write
+      pull-requests: write
     strategy:
       fail-fast: false
       matrix:
         unityVersion: # Available versions see: https://game.ci/docs/docker/versions
           - 2019.4.41f2
           - 2022.3.62f3 # Non-Enterprise LTS
-          - 6000.0.67f1
-          - 6000.3.7f1
-        depends:
-          - min # use required version of dependencies
+          - 6000.0.84f1
+          - 6000.3.25f1
+          - &latest_unity_version 6000.6.3f1
         testMode:
           - All # run tests in editor
         include:
-          - unityVersion: 6000.3.7f1
-            depends: latest # use latest version of dependencies
-            testMode: All
+          - unityVersion: *latest_unity_version
+            latestDependencies: true
             octocov: true
-          - unityVersion: 6000.0.58f1 # "Error building Player because scripts are compiling" in 6000.0.65f1 and 6000.3.4f1
-            depends: min
+          - unityVersion: 6000.0.63f1 # "Error building Player because scripts are compiling" in 6000.0.64f1 and 6000.3.1f1
             testMode: Standalone  # run tests on player
 
     steps:
-      - name: Create project for tests
-        uses: nowsprinting/create-unity-project-action@fab595f04a568aa51a94b28b7202b861b0f7d8b2 # v3
+      - name: Create project for test
+        uses: nowsprinting/create-unity-project-action@c086a110a56fd0600a6051e709d99e635e3f208e # v4.1.1
         with:
-          project-path: UnityProject~
-
-      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
-        with:
-          path: ${{ env.CREATED_PROJECT_PATH }}/Library
-          key: Library-linux-${{ matrix.unityVersion }}-${{ github.ref }}-${{ matrix.depends }}
-          restore-keys: |
-            Library-linux-${{ matrix.unityVersion }}-${{ github.ref }}
-            Library-linux-${{ matrix.unityVersion }}
-            Library-linux
-            Library
+          project-path: .
+          scripting-backend: 1        # IL2CPP
+          il2cpp-code-generation: 1   # Optimize for code size and build time
+          managed-stripping-level: 3  # High
 
       - name: Get package checkout path
         run: |
           name=com.dena.anjin
           echo "PACKAGE_PATH=$CREATED_PROJECT_PATH/Packages/$name" >> "$GITHUB_ENV"
+          # In Linux editor, there is a problem that assets in local packages cannot be found with `AssetDatabase.FindAssets`.
+          # As a workaround, I have made it into an embedded package.
 
       - name: Checkout repository as embedded package
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           submodules: false
           lfs: false
           path: ${{ env.PACKAGE_PATH }}
-          # In Linux editor, there is a problem that assets in local packages cannot be found with `AssetDatabase.FindAssets`.
-          # As a workaround, I have made it into an embedded package.
+
+      - name: Restore cache
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
+        with:
+          path: ${{ env.CREATED_PROJECT_PATH }}/Library
+          key: Library-${{ runner.os }}-${{ matrix.unityVersion }}-${{ hashFiles(format('{0}/package.json', env.PACKAGE_PATH)) }}
+          restore-keys: |
+            Library-${{ runner.os }}-${{ matrix.unityVersion }}-
+            Library-${{ runner.os }}-
+            Library-
 
       - name: Set package name
         run: |
           echo "PACKAGE_NAME=com.dena.anjin" >> "$GITHUB_ENV"
 
-      - name: Install dependencies (min version)
+      - name: Install dependent UPM packages
         run: |
           npm install -g openupm-cli
-          openupm add -f com.unity.test-framework@1.4.1
-          openupm add -f com.unity.testtools.codecoverage
+          openupm add -f com.unity.test-framework@stable
           openupm add -f com.cysharp.unitask@2.3.3
           openupm add -f com.nowsprinting.test-helper@1.1.1
           openupm add -f com.nowsprinting.test-helper.random@1.1.0
           openupm add -f com.nowsprinting.test-helper.ui@1.1.0
           openupm add -ft "${{ env.PACKAGE_NAME }}"@file:../../
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
-        if: ${{ matrix.depends == 'min' }}
 
-      - name: Install dependencies (latest version)
+      - name: Update dependent UPM packages
         run: |
-          npm install -g openupm-cli
-          openupm add -f com.unity.test-framework@stable
+          openupm add -f com.cysharp.unitask@latest
+          openupm add -f com.nowsprinting.test-helper@latest
+          openupm add -f com.nowsprinting.test-helper.random@latest
+          openupm add -f com.nowsprinting.test-helper.ui@latest
+        working-directory: ${{ env.CREATED_PROJECT_PATH }}
+        if: ${{ matrix.latestDependencies }}
+
+      - name: Install code-coverage package
+        run: |
           openupm add -f com.unity.testtools.codecoverage
-          openupm add -f com.cysharp.unitask
-          openupm add -f com.nowsprinting.test-helper
-          openupm add -f com.nowsprinting.test-helper.random
-          openupm add -f com.nowsprinting.test-helper.ui
-          openupm add -ft "${{ env.PACKAGE_NAME }}"@file:../../
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
-        if: ${{ matrix.depends == 'latest' }}
-
-      - name: Install Automated QA package (Unity version must be below 6000)
-        run: |
-          npm install -g openupm-cli
-          openupm add -f com.unity.automated-testing
-        working-directory: ${{ env.CREATED_PROJECT_PATH }}
-        if: ${{ matrix.unityVersion < '6000' }}
+        if: ${{ matrix.octocov }}
 
       - name: Set coverage assembly filters
         run: |
           assemblies=$(find ${{ env.PACKAGE_PATH }} -name "*.asmdef" | sed -e s/.*\\//\+/ | sed -e s/\\.asmdef// | sed -e s/^.*\\.Tests//)
           # shellcheck disable=SC2001,SC2048,SC2086
           echo "assembly_filters=$(echo ${assemblies[*]} | sed -e s/\ /,/g),+<assets>,-*.Tests" >> "$GITHUB_ENV"
+        if: ${{ matrix.octocov }}
 
       - name: Set license secret key
         run: echo "secret_key=UNITY_LICENSE_$(echo ${{ matrix.unityVersion }} | cut -c 1-4)" >> "$GITHUB_ENV"
 
       - name: Run tests
-        uses: game-ci/unity-test-runner@0ff419b913a3630032cbe0de48a0099b5a9f0ed9 # v4
+        uses: game-ci/unity-test-runner@f7d28f891263d875d47ef34370e9e8dd6087e1ef  # v5.0.0-beta.1
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           unityVersion: ${{ matrix.unityVersion }}  # Default is `auto`
-          checkName: test-anjin result (${{ matrix.unityVersion }}, ${{ matrix.depends }}, ${{ matrix.testMode }})
+          checkName: test (${{ matrix.unityVersion }}, ${{ matrix.testMode }}
           projectPath: ${{ env.CREATED_PROJECT_PATH }}
-          customParameters: -testCategory "!IgnoreCI" -testHelperScreenshotDirectory /github/workspace/artifacts/Screenshots
-          coverageOptions: generateAdditionalMetrics;generateTestReferences;generateHtmlReport;generateAdditionalReports;dontClear;assemblyFilters:${{ env.assembly_filters }}
+          customParameters: -retry 5 -testCategory "!IgnoreCI" -testHelperScreenshotDirectory /github/workspace/artifacts/Screenshots
+          # Note: `/github/workspace/artifacts` is the artifacts path inside the game-ci container
+          coverageOptions: generateAdditionalMetrics;generateHtmlReport;generateAdditionalReports;dontClear;assemblyFilters:${{ env.assembly_filters }}
           # see: https://docs.unity3d.com/Packages/com.unity.testtools.codecoverage@1.2/manual/CoverageBatchmode.html
           testMode: ${{ matrix.testMode }}
         env:
@@ -160,9 +156,9 @@ jobs:
         if: ${{ matrix.octocov }}
 
       - name: Upload test results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: TestResults-Unity${{ matrix.unityVersion }}-${{ matrix.depends }}-${{ matrix.testMode }}
+          name: TestResults-Unity${{ matrix.unityVersion }}-${{ matrix.testMode }}
           path: |
             ${{ steps.test.outputs.artifactsPath }}
             ${{ steps.test.outputs.coveragePath }}
