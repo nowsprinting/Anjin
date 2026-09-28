@@ -873,17 +873,3 @@ UNITY_VERSION=2019.4.40f1 make -k test
 
 > [!WARNING]  
 > テストを実行するには、**Project Settings > Player > Active Input Handling** を "Input Manager (Old)" または "Both" に設定する必要があります。
-
-
-## リリースワークフロー
-
-**Actions > Create release pull request > Run workflow** を実行し、作られたpull requestをデフォルトブランチにマージすることでリリース処理が実行されます。
-（もしくは、デフォルトブランチのpackage.json内のバージョン番号を書き換えます）
-
-リリース処理は、[Release](.github/workflows/release.yml)ワークフローで自動的に行われます。
-tagが付与されると、OpenUPMがtagを収集して更新してくれます。
-
-以下の操作は手動で行わないでください。
-
-- リリースタグの作成
-- ドラフトリリースの公開

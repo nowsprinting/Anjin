@@ -862,17 +862,3 @@ UNITY_VERSION=2019.4.40f1 make -k test
 
 > [!WARNING]  
 > You must select "Input Manager (Old)" or "Both" in the **Project Settings > Player > Active Input Handling** for running tests.
-
-
-## Release workflow
-
-Run **Actions > Create release pull request > Run workflow** and merge created pull request.
-(Or bump version in package.json on default branch)
-
-Then, Will do the release process automatically by [Release](.github/workflows/release.yml) workflow.
-And after tagged, OpenUPM retrieves the tag and updates it.
-
-Do **NOT** manually operation the following operations:
-
-- Create release tag
-- Publish draft releases
