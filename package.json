@@ -3,7 +3,6 @@
   "description": "Autopilot framework for Unity",
   "version": "1.9.0",
   "author": "DeNA Co., Ltd.",
-  "changelogUrl": "https://github.com/DeNA/Anjin/releases",
   "dependencies": {
     "com.cysharp.unitask": "2.3.3",
     "com.nowsprinting.test-helper.ui": "1.2.2"
