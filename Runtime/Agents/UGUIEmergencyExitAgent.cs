@@ -89,18 +89,28 @@ namespace DeNA.Anjin.Agents
             if (!_clickOperator.CanOperate(button))
             {
                 Logger.Log(LogType.Warning,
-                    $"EmergencyExitAnnotation attached {button.name}({button.GetInstanceID()}) appears but cannot be operated");
+                    $"EmergencyExitAnnotation attached {button.name}({GetIdForLog(button)}) appears but cannot be operated");
                 return;
             }
 
             if (!_reachableStrategy.IsReachable(button, out var raycastResult))
             {
                 Logger.Log(LogType.Warning,
-                    $"EmergencyExitAnnotation attached {button.name}({button.GetInstanceID()}) appears but not reachable");
+                    $"EmergencyExitAnnotation attached {button.name}({GetIdForLog(button)}) appears but not reachable");
                 return;
             }
 
             await _clickOperator.OperateAsync(button, raycastResult, cancellationToken);
         }
+
+        /// <summary>
+        /// Returns the identifier of the GameObject for logging.
+        /// </summary>
+#if UNITY_6000_4_OR_NEWER
+        private static EntityId GetIdForLog(GameObject gameObject) => gameObject.GetEntityId();
+        // Note: Unity 6000.4 replaces InstanceID with EntityId, and Unity 6000.5 turns the obsolete InstanceID APIs into compile errors.
+#else
+        private static int GetIdForLog(GameObject gameObject) => gameObject.GetInstanceID();
+#endif
     }
 }

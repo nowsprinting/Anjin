@@ -13,10 +13,19 @@ using UnityEngine;
 namespace DeNA.Anjin.Editor.ContextMenu
 {
     /// <inheritdoc/>
+#if UNITY_6000_4_OR_NEWER
+    public class DoCreateGameTitleSpecificAssembly : AssetCreationEndAction
+#else
     public class DoCreateGameTitleSpecificAssembly : EndNameEditAction
+#endif
     {
         /// <inheritdoc/>
+#if UNITY_6000_4_OR_NEWER
+        // Note: AssetCreationEndAction was added in Unity 6000.4, where EndNameEditAction became obsolete.
+        public override void Action(UnityEngine.EntityId instanceId, string pathName, string resourceFile)
+#else
         public override void Action(int instanceId, string pathName, string resourceFile)
+#endif
         {
             var moduleName = Path.GetFileName(pathName);
             AssetDatabase.CreateFolder(Path.GetDirectoryName(pathName), moduleName);
